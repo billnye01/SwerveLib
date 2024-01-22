@@ -63,7 +63,15 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
-        drive =
+
+        //Absulte Encoder Offset in rotations
+        drive = DriveInit.SwerveInit(
+          DriveInit.CANcoderSparkMax,
+          new GyroIOPigeon2(false),
+          new SwerveData(1, 2, 3, 0.0), // Front Left
+          new SwerveData(4, 5, 6, 0.0), // Front right
+          new SwerveData(7, 8, 9, 0.0), // back left
+          new SwerveData(10, 11, 12, 0.0)); // back right
             
         flywheel = new Flywheel(new FlywheelIOSparkMax());
         // drive = new Drive(
@@ -138,6 +146,7 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    //restet Rot
     controller
         .b()
         .onTrue(
