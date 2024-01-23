@@ -11,7 +11,7 @@ public class SwerveData {
 
     MotorDrive = motorDrive;
     MotorTurn = motorTurn;
-    Encoderid = Encoderid;
-    absoluteEncoderOffset = absoluteEncoderOffset;
+    this.Encoderid = Encoderid;
+    this.absoluteEncoderOffset = absoluteEncoderOffset;
   }
 }
