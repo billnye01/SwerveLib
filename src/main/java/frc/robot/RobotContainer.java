@@ -22,22 +22,20 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DriveCommands;
+import frc.robot.commands.Drive.DriveCommands;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveInit;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOSparkMax;
+import frc.robot.subsystems.drive.SwerveData;
+import frc.robot.subsystems.drive.SwerveType;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
-import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.flywheel.FlywheelIOSparkMax;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
-import frc.robot.subsystems.drive.DriveInit;
-import frc.robot.subsystems.drive.SwerveData;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -64,15 +62,16 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
 
-        //Absulte Encoder Offset in rotations
-        drive = DriveInit.SwerveInit(
-          DriveInit.CANcoderSparkMax,
-          new GyroIOPigeon2(false),
-          new SwerveData(1, 2, 3, 0.0), // Front Left
-          new SwerveData(4, 5, 6, 0.0), // Front right
-          new SwerveData(7, 8, 9, 0.0), // back left
-          new SwerveData(10, 11, 12, 0.0)); // back right
-            
+        // Absulte Encoder Offset in rotations
+        drive =
+            DriveInit.SwerveInit(
+                SwerveType.CANcoderSparkMax,
+                new GyroIOPigeon2(false),
+                new SwerveData(1, 2, 3, 0.0), // Front Left
+                new SwerveData(4, 5, 6, 0.0), // Front right
+                new SwerveData(7, 8, 9, 0.0), // back left
+                new SwerveData(10, 11, 12, 0.0)); // back right
+
         flywheel = new Flywheel(new FlywheelIOSparkMax());
         // drive = new Drive(
         // new GyroIOPigeon2(true),
@@ -85,15 +84,15 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
-        drive = DriveInit.SwerveInit(
-          DriveInit.CANcoderSparkMax,
-          new GyroIOPigeon2(true),
-          new SwerveData(1, 2, 3, 5.86287512), // Front Left
-          new SwerveData(4, 5, 6, 0.776193), // Front right
-          new SwerveData(7, 8, 9, 5.87360889), // back left
-          new SwerveData(10, 11, 12, 4.33958531) // back right
-
-        );
+        drive =
+            DriveInit.SwerveInit(
+                SwerveType.CANcoderSparkMax,
+                new GyroIOPigeon2(true),
+                new SwerveData(1, 2, 3, 5.86287512), // Front Left
+                new SwerveData(4, 5, 6, 0.776193), // Front right
+                new SwerveData(7, 8, 9, 5.87360889), // back left
+                new SwerveData(10, 11, 12, 4.33958531) // back right
+                );
         flywheel = new Flywheel(new FlywheelIO() {});
 
         break;
@@ -147,7 +146,7 @@ public class RobotContainer {
             () -> -controller.getLeftX(),
             () -> -controller.getRightX()));
     controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    //restet Rot
+    // restet Rot
     controller
         .b()
         .onTrue(

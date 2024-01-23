@@ -64,12 +64,13 @@ public class ModuleIOTalonFX implements ModuleIO {
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
 
-  public ModuleIOTalonFX( int TalonDriveid, int TurnTalonid, int CANcoderid,double absoluteEncoderOffset) {
+  public ModuleIOTalonFX(
+      int TalonDriveid, int TurnTalonid, int CANcoderid, double absoluteEncoderOffset) {
 
     driveTalon = new TalonFX(TalonDriveid);
     turnTalon = new TalonFX(TurnTalonid);
     cancoder = new CANcoder(CANcoderid);
-    absoluteEncoderOffset = new Rotation2d(absoluteEncoderOffset); // MUST BE CALIBRATED
+    this.absoluteEncoderOffset = new Rotation2d(absoluteEncoderOffset); // MUST BE CALIBRATED
 
     var driveConfig = new TalonFXConfiguration();
     driveConfig.CurrentLimits.StatorCurrentLimit = 40.0;

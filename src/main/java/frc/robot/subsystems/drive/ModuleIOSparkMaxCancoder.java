@@ -13,6 +13,10 @@
 
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
@@ -20,8 +24,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
 import java.util.Queue;
 
 /**
@@ -47,16 +49,15 @@ public class ModuleIOSparkMaxCancoder implements ModuleIO {
 
   private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turnRelativeEncoder;
-  private final AnalogInput turnAbsoluteEncoder;
   private final Queue<Double> drivePositionQueue;
   private final Queue<Double> turnPositionQueue;
   private final StatusSignal<Double> turnAbsolutePosition;
 
-
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
 
-  public ModuleIOSparkMaxCancoder( int SparkMaxidDrive, int SparkMaxidTurn, int CANcoderid, double absoluteEncoderOffset) {
+  public ModuleIOSparkMaxCancoder(
+      int SparkMaxidDrive, int SparkMaxidTurn, int CANcoderid, double absoluteEncoderOffset) {
 
     driveSparkMax = new CANSparkMax(SparkMaxidDrive, MotorType.kBrushless);
     turnSparkMax = new CANSparkMax(SparkMaxidTurn, MotorType.kBrushless);
@@ -89,6 +90,10 @@ public class ModuleIOSparkMaxCancoder implements ModuleIO {
     driveSparkMax.setCANTimeout(0);
     turnSparkMax.setCANTimeout(0);
 
+    cancoder.getConfigurator().apply(new CANcoderConfiguration());
+
+    turnAbsolutePosition = cancoder.getAbsolutePosition();
+
     driveSparkMax.setPeriodicFramePeriod(
         PeriodicFrame.kStatus2, (int) (1000.0 / Module.ODOMETRY_FREQUENCY));
     turnSparkMax.setPeriodicFramePeriod(
@@ -100,6 +105,8 @@ public class ModuleIOSparkMaxCancoder implements ModuleIO {
 
     driveSparkMax.burnFlash();
     turnSparkMax.burnFlash();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(50.0, turnAbsolutePosition);
   }
 
   @Override
@@ -112,9 +119,9 @@ public class ModuleIOSparkMaxCancoder implements ModuleIO {
     inputs.driveCurrentAmps = new double[] {driveSparkMax.getOutputCurrent()};
 
     inputs.turnAbsolutePosition =
-        new Rotation2d(
-                turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V() * 2.0 * Math.PI)
-            .minus(this.absoluteEncoderOffset);
+        Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble())
+            .minus(absoluteEncoderOffset);
+
     inputs.turnPosition =
         Rotation2d.fromRotations(turnRelativeEncoder.getPosition() / TURN_GEAR_RATIO);
     inputs.turnVelocityRadPerSec =
@@ -133,13 +140,6 @@ public class ModuleIOSparkMaxCancoder implements ModuleIO {
             .toArray(Rotation2d[]::new);
     drivePositionQueue.clear();
     turnPositionQueue.clear();
-
-    cancoder.getConfigurator().apply(new CANcoderConfiguration());
-
-    turnAbsolutePosition = cancoder.getAbsolutePosition();
-
-     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0. TurnAbsolutePosition);
   }
 
   @Override

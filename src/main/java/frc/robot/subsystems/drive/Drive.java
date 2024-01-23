@@ -35,7 +35,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import frc.robot.subsystem.drive.AutoTurnFunction;
 
 public class Drive extends SubsystemBase {
   private static final double maxSPEED = 5;
@@ -241,29 +240,29 @@ public class Drive extends SubsystemBase {
     return MAX_ANGULAR_SPEED;
   }
 
-  public void setMaxLinearSpeedMetersPerSec(double NewSpeed){
+  public void setMaxLinearSpeedMetersPerSec(double NewSpeed) {
     MAX_LINEAR_SPEED = NewSpeed;
-    MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS
+    MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
     ResetMaxAngularSpeed();
   }
 
-  public void setMaxLinearSpeedFeetPerSec(double NewSpeed){
+  public void setMaxLinearSpeedFeetPerSec(double NewSpeed) {
     MAX_LINEAR_SPEED = Units.feetToMeters(NewSpeed);
     ResetMaxAngularSpeed();
   }
 
-  public void ResetMaxAngularSpeed(){
-    MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS
+  public void ResetMaxAngularSpeed() {
+    MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
   }
 
-  public void ActivateAutoTurn(Drive drive, double Rotation){
+  public void ActivateAutoTurn(Drive drive, double Rotation) {
     AutoTurn.InitAutoTurn(Rotation, drive);
   }
 
-  public void TogleSpeed(){
-    if(MAX_LINEAR_SPEED = maxSPEED){
+  public void TogleSpeed() {
+    if (MAX_LINEAR_SPEED == maxSPEED) {
       MAX_LINEAR_SPEED = minSPEED;
-    }else{
+    } else {
       MAX_LINEAR_SPEED = maxSPEED;
     }
   }

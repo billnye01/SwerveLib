@@ -53,12 +53,13 @@ public class ModuleIOSparkMaxAnlog implements ModuleIO {
   private final boolean isTurnMotorInverted = true;
   private final Rotation2d absoluteEncoderOffset;
 
-  public ModuleIOSparkMaxAnlog(int SparkMaxidDrive, int SparkMaxidTurn, int Analogid, double absoluteEncoderOffset) {
+  public ModuleIOSparkMaxAnlog(
+      int SparkMaxidDrive, int SparkMaxidTurn, int Analogid, double absoluteEncoderOffset) {
 
     driveSparkMax = new CANSparkMax(SparkMaxidDrive, MotorType.kBrushless);
     turnSparkMax = new CANSparkMax(SparkMaxidTurn, MotorType.kBrushless);
     turnAbsoluteEncoder = new AnalogInput(Analogid);
-    absoluteEncoderOffset = new Rotation2d(absoluteEncoderOffset); // MUST BE CALIBRATED
+    this.absoluteEncoderOffset = new Rotation2d(absoluteEncoderOffset); // MUST BE CALIBRATED
 
     driveSparkMax.restoreFactoryDefaults();
     turnSparkMax.restoreFactoryDefaults();
