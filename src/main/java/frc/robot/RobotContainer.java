@@ -87,14 +87,15 @@ public class RobotContainer {
         // Sim robot, instantiate physics sim IO implementations
         drive = DriveInit.SwerveInit(
           DriveInit.CANcoderSparkMax,
-          new GyroIOPigeon2(false),
-          new SwerveData(1, 2, 3, 0.0), // Front Left
-          new SwerveData(4, 5, 6, 0.0), // Front right
-          new SwerveData(7, 8, 9, 0.0), // back left
-          new SwerveData(10, 11, 12, 0.0) // back right
+          new GyroIOPigeon2(true),
+          new SwerveData(1, 2, 3, 5.86287512), // Front Left
+          new SwerveData(4, 5, 6, 0.776193), // Front right
+          new SwerveData(7, 8, 9, 5.87360889), // back left
+          new SwerveData(10, 11, 12, 4.33958531) // back right
 
         );
-        flywheel = new Flywheel(new FlywheelIOSim());
+        flywheel = new Flywheel(new FlywheelIO() {});
+
         break;
 
       default:

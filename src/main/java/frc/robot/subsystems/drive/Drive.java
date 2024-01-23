@@ -35,9 +35,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystem.drive.AutoTurnFunction;
 
 public class Drive extends SubsystemBase {
-  private double MAX_LINEAR_SPEED = Units.feetToMeters(14.5);
+  private static final double maxSPEED = 5;
+  private static final double minSPEED = 5;
+
+  private double MAX_LINEAR_SPEED = Units.feetToMeters(maxSPEED);
   private static final double TRACK_WIDTH_X = Units.inchesToMeters(25.0);
   private static final double TRACK_WIDTH_Y = Units.inchesToMeters(25.0);
   private static final double DRIVE_BASE_RADIUS =
@@ -52,6 +56,8 @@ public class Drive extends SubsystemBase {
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Pose2d pose = new Pose2d();
   private Rotation2d lastGyroRotation = new Rotation2d();
+
+  public AutoTurnFunction AutoTurn;
 
   public Drive(
       GyroIO gyroIO,
@@ -248,6 +254,18 @@ public class Drive extends SubsystemBase {
 
   public void ResetMaxAngularSpeed(){
     MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS
+  }
+
+  public void ActivateAutoTurn(Drive drive, double Rotation){
+    AutoTurn.InitAutoTurn(Rotation, drive);
+  }
+
+  public void TogleSpeed(){
+    if(MAX_LINEAR_SPEED = maxSPEED){
+      MAX_LINEAR_SPEED = minSPEED;
+    }else{
+      MAX_LINEAR_SPEED = maxSPEED;
+    }
   }
 
   /** Returns an array of module translations. */
